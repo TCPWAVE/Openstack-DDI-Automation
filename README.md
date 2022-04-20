@@ -801,6 +801,49 @@ Add **[tcpwave]** section with the below parameters.
                        TWCUpdater(connection).run()
                    except KeyboardInterrupt:
                        log.debug('TCPWave neutron listener: exiting TCPWave Neutron Monitor..')
+     
+  Create file **/usr/lib/systemd/system/neutron-listener.service** with below content
+     
+          [Unit]
+          Description=TCPWave neutron event handler
+          After=neutron-server.service
+           
+          [Service]
+          Type=simple
+          User=root
+          ExecStart=/usr/bin/python3 /opt/tcpwave/neutron_monitor.py
+          Restart=on-failure
+           
+          [Install]
+          WantedBy=multi-user.target
+          
+  Execute the commands: **systemctl daemon-reload** and **systemctl start neutron-listener**
+  
+  After following the above steps, neutron-listener service will be up and running.
+  
+  The amq messages from neutron service will be monitored.
+  
+  The neutron-listener logs can be seen using the command:  **tail -f /var/log/neutron/server.log | grep 'TCPWave neutron listener’**
+  
+# Use cases
+
+   1. Create/delete a subnet in Openstack, then static subnet will be added/deleted from the IPAM.
+   2.  Create an instance in Openstack with network address, then an object will be created in the IPAM.             
+   3. Attach interface to the Openstack instance, then an object will be created in the IPAM.
+   4. Associate a floating IP to the Openstack instance, then an object will be created in the IPAM.
+   5. Disassociate floating IP from the Openstack instance, then object will be deleted from the IPAM.
+   6. Detach interface from the Openstack instance, then an object will be deleted from the IPAM.
+   7. Delete the Openstack instance, then an object will be deleted from the IPAM.
+   
+In all the above cases, object will be created in the IPAM when the subnet is present in the IPAM. Otherwise, a resource record will be created in the zone specified in the /etc/neutron/neutron.conf file.  When a floating IP is associated with an instance, object will be added in the IPAM with e same name as the interface to which floating IP is associated when the global option ‘Warn on duplicate object names’ is set to No. Otherwise, object will be overridden.
+
+# Conclusion
+
+By following the above configuration, OpenStack automation will be achieved to manage DNS entries without manual intervention when servers are allocated or deallocated in OpenStack using the neutron-listener service implemented by TCPWave.
+
+          
+ 
+
            
   
   
