@@ -5,7 +5,7 @@ OpenStack is an open source cloud computing infrastructure software project. Thi
  With the OpenStack – IPAM integration, the DNS changes will happen automatically through the IPAM when servers are added/deleted, if the neutron event listener     service is configured.
  
  ## Architectural Diagram
- <img width="360" alt="openstack" src="https://user-images.githubusercontent.com/56577268/164163286-9aa6d7b3-c395-4306-ae88-529f96e71372.png">
+ ![openstack](https://user-images.githubusercontent.com/56577268/164609519-e8c8a3d3-b65b-4a8c-b442-bc5666425d49.png)
  
  # Design
   ## Neutron Listener Service
